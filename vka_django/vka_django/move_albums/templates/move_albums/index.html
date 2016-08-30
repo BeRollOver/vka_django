@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Move Albums</title>
+
+  <base href="/" />
+
+  {% include 'move_albums/stylesheets.html' %}
+</head>
+
+<body>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-xs-12 ng-view">
+
+        <ul>
+          {% for group in grouplist %}
+            <li>
+              <img src={{ group.photo_100 }} />
+              <a href="{% url 'move_albums:albums' group.id %}">{{ group.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+
+      </div>
+    </div>
+  </div>
+
+  {% include 'move_albums/javascripts.html' %}
+</body>
+</html>

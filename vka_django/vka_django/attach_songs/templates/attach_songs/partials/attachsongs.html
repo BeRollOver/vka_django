@@ -1,0 +1,21 @@
+﻿{% verbatim %}
+<div class="container-fluid">
+    <div class="row" style="margin-top:12px">
+        <div class="col-xs-12">
+            <button class="btn" ng-click="atsCtrl.back()">Back</button>
+            <input type="text" class="form-control" style="display:inline" placeholder="Insert URL with access token from oauth window if you want to attach the songs" ng-model="token">
+            <a target="_blank" href="https://oauth.vk.com/authorize?client_id=4919033&display=mobile&redirect_uri=https://oauth.vk.com/blank.html&scope=wall&response_type=token&v=5.53">Get Token</a>
+            <div ui-view="audio"></div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6" style="margin-top:12px">
+            <div ui-grid="atsCtrl.grid"></div>
+        </div>
+
+        <div div class="col-xs-12 col-sm-6" style="margin-top:12px" ui-view="albums"></div>
+    </div>
+    <div class="row" ui-view="songs" style="margin-top:12px"></div>
+    </div>
+    {% endverbatim %}

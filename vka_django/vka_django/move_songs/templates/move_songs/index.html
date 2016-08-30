@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html ng-app="moveSongsApp">
+<head>
+  <title>Move Songs</title>
+
+  {% include 'move_songs/stylesheets.html' %}
+</head>
+
+
+  <body class="container" ng-controller="GroupListController as glCtrl">
+    
+      {% verbatim %}
+      <form ng-controller="MoveSongsController as msCtrl" ng-submit="msCtrl.moveSongs()">
+          <div>
+              <input ng-model="fromGroupName" />
+          </div>
+          <select size="5" required ng-model="msCtrl.data.from">
+              <option ng-repeat="group in glCtrl.groups | filter:{name:fromGroupName}" value="{{ group.gid }}">{{ group.name }}</option>
+          </select>
+          
+          <div>
+              <input ng-model="toGroupName" />
+          </div>
+          <select size="5" required ng-model="msCtrl.data.to">
+              <option ng-repeat="group in glCtrl.groups | filter:{name:toGroupName}" value="{{ group.gid }}">{{ group.name }}</option>
+          </select>
+          <div>
+              <input ng-model="msCtrl.data.album_title" required />
+              <textarea ng-model="msCtrl.data.songs" required></textarea>
+          </div>
+          <button ng-show="msCtrl.isEnable" class="button">Move Songs</button>
+      </form>
+      {% endverbatim %}
+
+  {% include 'move_songs/javascripts.html' %}
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html ng-app="attachSongsApp">
+<head>
+  <title>Attach Songs</title>
+
+  {% include 'attach_songs/stylesheets.html' %}
+</head>
+
+
+<body>
+   {% verbatim %}
+    <div class="container">
+      <button class="btn" ui-sref="groups">Choose group</button>
+    </div>
+    <div class="container" ui-view></div>
+    {% endverbatim %}
+
+  {% include 'attach_songs/javascripts.html' %}
+</body>
+</html>

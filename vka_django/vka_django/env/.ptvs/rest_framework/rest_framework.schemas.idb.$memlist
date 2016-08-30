@@ -1,0 +1,17 @@
+coreapi
+exceptions
+uritemplate
+urlparse
+six
+serializers
+settings
+SchemaGenerator
+is_api_view
+clone_request
+as_query_fields
+APIView
+RegexURLPattern
+simplify_regex
+RegexURLResolver
+import_module
+force_text
