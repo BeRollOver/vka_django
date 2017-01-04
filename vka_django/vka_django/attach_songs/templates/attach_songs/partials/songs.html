@@ -1,17 +1,8 @@
-﻿<div class="col-xs-12 col-lg-8">
+﻿<div class="col-xs-12">
     <div ui-grid="asCtrl.grid" ui-grid-selection></div>
 </div>
 
-<div class="col-xs-12 col-lg-4">
-    {% verbatim %}
-    <button class="btn" style="background-color:#008080;color:white" ng-click="attachSongs(token, aids)">Attach</button>
-    <button class="btn" style="margin: 3px 3px 3px 0" ng-repeat="attachment in attachments | songFilter" ng-click="removeSongs(attachment)">{{ attachment.audio.title }}</button>
-    
-    {% endverbatim %}
-</div>
-
 <div class="col-xs-12" style="margin-top:12px">
-    <input type="text" class="form-control" placeholder="Audio ids" ng-model="aids">
     <p>You may attach tracks by their ids. For this you need open album in vk.com site, press key <code>F12</code>, select Console tab, insert following code in command line and press <code>Enter</code>:</p>
     <pre>var div = document.createElement('script');
 div.setAttribute('src', 'https://yandex.st/jquery/1.10.1/jquery.min.js');

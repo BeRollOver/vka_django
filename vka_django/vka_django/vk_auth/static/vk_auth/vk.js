@@ -9,6 +9,6 @@ VK.Auth.getLoginStatus(function (response) {
         /* Неавторизованный в Open API пользователь,  response.status="not_authorized" */
         VK.Auth.login(function (response) {
             alert(response);
-        }, 262152 + 8192);
+        }, 262144 + 8192 + 8);
     }
 });

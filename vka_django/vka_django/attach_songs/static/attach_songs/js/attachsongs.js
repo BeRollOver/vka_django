@@ -48,6 +48,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
         url: '/{post_id:[0-9]+}',
         parent: 'posts',
 
+        data: {
+            post: {},
+            attachments: [],
+        },
+
         onEnter: function ($stateParams, $state, $uibModal) {
             $uibModal.open({
                 controller: 'AttachSongsController as atsCtrl',

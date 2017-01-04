@@ -1,11 +1,13 @@
 ﻿var app = angular.module('vkApp.services', []);
 
+var API_VERS = "5.60";
+
 app.factory('getGroupsService', function ($q) {
 	return {
 		getData: function (filter) {
 			var deferred = $q.defer();
 			VK.Auth.getLoginStatus(function (response) {
-				VK.Api.call('groups.get', { user_id: parseInt(response.session.mid), extended: 1, filter: filter, v: 5.53 }, function (r) {
+				VK.Api.call('groups.get', { user_id: parseInt(response.session.mid), extended: 1, filter: filter, v: API_VERS }, function (r) {
 					if (r.response) {
 						deferred.resolve(r.response.items);
 					}
@@ -21,7 +23,7 @@ app.factory('getPostsService', function ($q) {
 		getData: function (group_id) {
 			var deferred = $q.defer();
 			VK.Auth.getLoginStatus(function (response) {
-				VK.Api.call('wall.get', { owner_id: -group_id, filter: 'postponed', v: 5.53 }, function (r) {
+				VK.Api.call('wall.get', { owner_id: -group_id, filter: 'postponed', v: API_VERS }, function (r) {
 					if (r.response) {
 						deferred.resolve(r.response.items);
 					}
@@ -37,7 +39,7 @@ app.factory('getPostService', function ($q) {
 		getData: function (group_id, post_id) {
 			var deferred = $q.defer();
 			VK.Auth.getLoginStatus(function (response) {
-				VK.Api.call('wall.getById', { owner_id: "-" + group_id + "_" + post_id, filter: 'postponed', v: 5.53 }, function (r) {
+				VK.Api.call('wall.getById', { owner_id: "-" + group_id + "_" + post_id, filter: 'postponed', v: API_VERS }, function (r) {
 					if (r.response) {
 						deferred.resolve(r.response);
 					}
@@ -59,7 +61,7 @@ app.factory('getAlbumsService', function ($q) {
 			// если offset больше или равно, значит все альбомы получены,
 			// иначе - необходим вызов с новым смещением и обновленным акумулятором
 			var call = function (offset, result) {
-				VK.Api.call('audio.getAlbums', { owner_id: -audio_group_id, count: 100, offset: offset, v: 5.53 }, function (r) {
+				VK.Api.call('audio.getAlbums', { owner_id: "-" + audio_group_id, count: 100, offset: offset, v: API_VERS }, function (r) {
 					if (r.response) {
 						result = result.concat(r.response.items);
 						offset += 100;
@@ -87,7 +89,7 @@ app.factory('getSongsService', function ($q) {
 		getData: function (audio_group_id, audio_album_id) {
 			var deferred = $q.defer();
 			VK.Auth.getLoginStatus(function (response) {
-				VK.Api.call('audio.get', { owner_id: -audio_group_id, album_id: audio_album_id, v: 5.53 }, function (r) {
+				VK.Api.call('audio.get', { owner_id: -audio_group_id, album_id: audio_album_id, v: API_VERS }, function (r) {
 					if (r.response) {
 						deferred.resolve(r.response.items);
 					}
@@ -114,7 +116,7 @@ app.factory('editPostService', function ($q) {
 					publish_date: post.date,
 					message: post.message,
 					attachments: str_atts,
-					v: 5.53
+					v: API_VERS
 				}, function (r) {
 					if (r.response) {
 						deferred.resolve(r.response.items);

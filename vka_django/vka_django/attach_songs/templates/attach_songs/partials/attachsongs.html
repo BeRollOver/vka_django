@@ -8,6 +8,14 @@
             <div ui-view="audio"></div>
         </div>
     </div>
+    
+    <div class="row" style="margin-top:12px">
+        <div class="col-xs-12 col-lg-4">
+            <button class="btn" style="background-color:#008080;color:white;" ng-click="attachSongs(token, aids)">Attach</button>
+            <button class="btn" style="margin: 3px 3px 3px 0" ng-repeat="attachment in attachments | songFilter" ng-click="removeSongs(attachment)">{{ attachment.audio.title }}</button>
+            <input type="text" style="margin-top:10px" class="form-control" placeholder="Audio ids" ng-model="aids">
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-xs-12 col-sm-6" style="margin-top:12px">
@@ -17,5 +25,5 @@
         <div div class="col-xs-12 col-sm-6" style="margin-top:12px" ui-view="albums"></div>
     </div>
     <div class="row" ui-view="songs" style="margin-top:12px"></div>
-    </div>
-    {% endverbatim %}
+</div>
+{% endverbatim %}

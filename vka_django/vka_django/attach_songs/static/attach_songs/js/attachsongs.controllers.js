@@ -31,7 +31,73 @@ app.controller('PostListController', function ($state, getPosts) {
     };
 });
 
-app.controller('AttachSongsController', function ($state, $stateParams, getGroups, $uibModalInstance) {
+app.controller('AttachSongsController', function ($scope, $state, $stateParams, $http, getGroups, $uibModalInstance) {
+    var post = $state.current.data.posts.find(post => post.id == $stateParams.post_id ? true : false);
+    $state.current.data.post = { post_id: post.id, owner_id: post.owner_id, date: post.date, message: post.text };
+    $state.current.data.attachments = post.attachments || [];
+    $scope.attachments = $state.current.data.attachments;
+
+    // Удаляет песни из списка прикреплений
+    $scope.removeSongs = function (song) {
+        var i = $state.current.data.attachments.indexOf(song);
+        if (i !== -1 && $state.current.data.attachments[i].type === 'audio')
+            $state.current.data.attachments.splice(i, 1);
+    };
+
+    $scope.attachSongs = function (url, aids) {
+        // Получаем токен из переданного url
+        var token = url.split("=")[1].split("&")[0]
+        if (!token) {
+            alert("Invalid token!");
+            return null;
+        }
+
+        // Формируем текстовое представление массива выбранных прикреплений
+        // Особый случай - прикрепление-ссылка, её необходимо разместить в самом конце
+        var link = "";
+        var str_atts = $scope.attachments.map(attachment => {
+            if (attachment.type !== 'link') {
+                return attachment.type + attachment[attachment.type].owner_id + "_" + attachment[attachment.type].id;
+            }
+            else {
+                link = attachment[attachment.type].url;
+                return "";
+            }
+        }).join(",");
+
+        // Прикрепляем аудио по переданным ids
+        if (aids) {
+            if (str_atts) {
+                str_atts += ",";
+            }
+            str_atts += aids.split(",").map(x => "audio" + x).join(",");
+        }
+
+        // Прикрепляем ссылку если есть
+        if (link) {
+            str_atts += "," + link;
+        }
+
+        $http.jsonp(`https://api.vk.com/method/wall.edit?` +
+            `owner_id=${$state.current.data.post.owner_id}&` +
+            `post_id=${$state.current.data.post.post_id}&` +
+            `message=${encodeURIComponent($state.current.data.post.message)}&` +
+            `attachments=${str_atts}&` +
+            `publish_date=${$state.current.data.post.date}&` +
+            `access_token=${token}&v=5.53&callback=JSON_CALLBACK`).
+              success(function (data, status, headers, config) {
+                  // this callback will be called asynchronously
+                  // when the response is available
+                  if (data.error) alert(data.error.error_code + ": " + data.error.error_msg);
+                  else alert("Success");
+              }).
+              error(function (data, status, headers, config) {
+                  // called asynchronously if an error occurs
+                  // or server returns response with an error status.
+                  alert("Fail");
+              });
+    };
+
     this.grid = {
         data: getGroups,
         enableSorting: true,
@@ -63,59 +129,13 @@ app.controller('GroupAlbumsController', function ($state, getAlbums) {
     };
 });
 
-app.controller('AlbumSongsController', function ($scope, $http, $state, $stateParams, getSongs) {
-    var post = $state.current.data.posts.find(post => post.id == $stateParams.post_id ? true : false);
-    $scope.post = { post_id: post.id, owner_id: post.owner_id, date: post.date, message: post.text };
-    $scope.attachments = post.attachments || [];
-
-    // Удаляет песни из списка прикреплений
-    $scope.removeSongs = function (song) {
-        var i = $scope.attachments.indexOf(song);
-        if (i !== -1 && $scope.attachments[i].type === 'audio')
-            $scope.attachments.splice(i, 1);
-    };
-
+app.controller('AlbumSongsController', function ($scope, $state, $stateParams, getSongs) {
     // Добавляет песни с список прикреплений
     $scope.addSong = function (song) {
-        var audios = $scope.attachments.filter(attachment => attachment.type === 'audio' ? true : false);
+        var audios = $state.current.data.attachments.filter(attachment => attachment.type === 'audio' ? true : false);
         var ids = audios.map(audio => audio.audio.id);
-        if (!ids.includes(song.audio.id) && $scope.attachments.length < 10)
-            $scope.attachments.push(song);
-    };
-
-    $scope.attachSongs = function (url, aids) {
-        var token = url.split("=")[1].split("&")[0]
-        if (!token) {
-            alert("Invalid token!");
-            return null;
-        }
-        var atts = $scope.attachments.map(attachment => attachment.type !== 'link' ?
-            attachment.type + attachment[attachment.type].owner_id + "_" + attachment[attachment.type].id :
-            attachment[attachment.type].url);
-        var str_atts = atts.join(",");
-        if (aids) {
-            var arr_aids = aids.split(",");
-            str_atts += arr_aids.map(x => ",audio" + x);
-        }
-
-        $http.jsonp(`https://api.vk.com/method/wall.edit?` +
-            `owner_id=${$scope.post.owner_id}&` +
-            `post_id=${$scope.post.post_id}&` +
-            `message=${encodeURIComponent($scope.post.message)}&` +
-            `attachments=${str_atts}&` +
-            `publish_date=${$scope.post.date}&` +
-            `access_token=${token}&v=5.53&callback=JSON_CALLBACK`).
-              success(function (data, status, headers, config) {
-                  // this callback will be called asynchronously
-                  // when the response is available
-                  if (data.error) alert(data.error.error_code + ": " + data.error.error_msg);
-                  else alert("Success");
-              }).
-              error(function (data, status, headers, config) {
-                  // called asynchronously if an error occurs
-                  // or server returns response with an error status.
-                  alert("Fail");
-              });
+        if (!ids.includes(song.audio.id) && $state.current.data.attachments.length < 10)
+            $state.current.data.attachments.push(song);
     };
 
     this.grid = {
